@@ -38,8 +38,7 @@ class Blender():
 	def set(self, state):
 		print('GPIO pin {:} set to {:}'.format(self.pin, state))
 		GPIO.output(self.pin, state)
-		if state:
-			signal.alarm(TIMEOUT_BLENDER_OFF)
+		signal.alarm(TIMEOUT_BLENDER_OFF if state else 0)
 
 	def get(self):
 		return GPIO.input(self.pin)
