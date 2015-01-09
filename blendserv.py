@@ -28,20 +28,23 @@ def handle_sigalrm(sig, frame):
 class Blender():
 
 	pin = None
+	state = False
 	
 	def __init__(self, pin):
 		self.pin = pin
 		GPIO.setmode(GPIO.BCM)
 		GPIO.setup(self.pin, GPIO.OUT)
-		self.set(False) # Default anyway
+		self.set(self.state)
 
 	def set(self, state):
-		print('GPIO pin {:} set to {:}'.format(self.pin, state))
+		print('Setting GPIO pin {:} to {:}'.format(self.pin, state))
 		GPIO.output(self.pin, state)
 		signal.alarm(TIMEOUT_BLENDER_OFF if state else 0)
+		self.state = state
 
 	def get(self):
-		return GPIO.input(self.pin)
+		return self.state
+#		return GPIO.input(self.pin)
 
 
 class WebServer(http.server.SimpleHTTPRequestHandler):
