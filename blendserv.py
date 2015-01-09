@@ -10,7 +10,7 @@ import socketserver
 import base64
 import urllib
 import signal
-import RPi.GPIO as GPIO
+import RPIO
 
 srv_info = {'port': 8192, # Listening port
 	    'host': '',   # Listening host
@@ -18,7 +18,7 @@ srv_info = {'port': 8192, # Listening port
 	    'pass': b'froopberry'}
 
 TIMEOUT_BLENDER_OFF = 7 * 60
-PIN_BLENDER = 18 # GPIO 1 on Raspberry Pi model B
+PIN_BLENDER = 18 # RPIO 1 on Raspberry Pi model B
 
 def handle_sigalrm(sig, frame):
 	print("SIGALRM")
@@ -32,19 +32,20 @@ class Blender():
 	
 	def __init__(self, pin):
 		self.pin = pin
-		GPIO.setmode(GPIO.BCM)
-		GPIO.setup(self.pin, GPIO.OUT)
-		self.set(self.state)
+		RPIO.setup(self.pin, RPIO.OUT)
+		RPIO.setmode(RPIO.BCM)
+		self.set(False)
+		signal.signal(signal.SIGALRM, handle_sigalrm)
 
 	def set(self, state):
-		print('Setting GPIO pin {:} to {:}'.format(self.pin, state))
-		GPIO.output(self.pin, state)
+		print('Setting RPIO pin {:} to {:}'.format(self.pin, state))
+		RPIO.output(self.pin, state)
 		signal.alarm(TIMEOUT_BLENDER_OFF if state else 0)
 		self.state = state
 
 	def get(self):
 		return self.state
-#		return GPIO.input(self.pin)
+#		return RPIO.input(self.pin)
 
 
 class WebServer(http.server.SimpleHTTPRequestHandler):
@@ -81,9 +82,7 @@ class WebServer(http.server.SimpleHTTPRequestHandler):
 		if not self.authenticate():
 			return
 
-		data = blender.get()
-		state = b'1\n' if data else b'0\n'
-		self.wfile.write(state)
+		self.wfile.write(b'1\n' if blender.state else b'0\n')
 
 	def do_POST(self):
 		if not self.authenticate():
@@ -95,13 +94,16 @@ class WebServer(http.server.SimpleHTTPRequestHandler):
 
 		if 'blender' in data:
 			state = data['blender'][0]
+
 			if state != '1' and state != '0':
 				return
-			if blender.get() != state:
-				blender.set(True if state == '1' else False)
 
-		data = b'1\n' if blender.get() else b'0\n'
-		self.wfile.write(data)
+			state = True if state == '1' else False
+
+			if blender.get() != state:
+				blender.set(state)
+
+		self.wfile.write(b'1\n' if blender.state else b'0\n')
 
 blender = Blender(PIN_BLENDER)
 
@@ -116,8 +118,6 @@ server.server_bind()     # Manually bind, to support allow_reuse_address
 server.server_activate() # (see above comment)
 
 handler = http.server.SimpleHTTPRequestHandler
-
-signal.signal(signal.SIGALRM, handle_sigalrm)
 
 print("Server bound to interface '{:}', port {:}".format(srv_info['host'], srv_info['port']))
 server.serve_forever()
