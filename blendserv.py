@@ -9,7 +9,7 @@ import http.server
 import socketserver
 import base64
 import urllib
-import signal
+import threading
 import RPIO
 
 srv_info = {'port': 8192, # Listening port
@@ -17,30 +17,44 @@ srv_info = {'port': 8192, # Listening port
 	    'user': b'foop',
 	    'pass': b'froopberry'}
 
-TIMEOUT_BLENDER_OFF = 7 * 60
+TIMEOUT_BLENDER_OFF = 5 # 3 * 60
 PIN_BLENDER = 18 # GPIO 1 on Raspberry Pi model B
 
-def handle_sigalrm(sig, frame):
-	print("SIGALRM")
-	blender.set(False)
-
-# XXX Not thread safe (uses SIGALRM)
 class Blender():
 
 	pin = None
-	state = False
+	state = None
+	timeout = None
+	timeout_thread = None
 	
-	def __init__(self, pin):
+	def __init__(self, pin, timeout):
 		self.pin = pin
+		self.timeout = timeout
 		RPIO.setup(self.pin, RPIO.OUT)
 		RPIO.setmode(RPIO.BCM)
 		self.set(False)
-		signal.signal(signal.SIGALRM, handle_sigalrm)
+
+	def handle_timeout(self):
+		print("Timeout")
+		self.set(False)
 
 	def set(self, state):
 		print('Setting GPIO pin {:} to {:}'.format(self.pin, state))
+
+		if self.timeout_thread:
+			self.timeout_thread.cancel()
+
 		RPIO.output(self.pin, state)
-		signal.alarm(TIMEOUT_BLENDER_OFF if state else 0)
+		if state:
+			self.timeout_thread = threading.Timer(self.timeout, 
+							      self.handle_timeout, 
+							      [])
+			self.timeout_thread.start()
+
+		if state == self.state:
+			print("State unchanged ({:})".format(state))
+			return
+
 		self.state = state
 
 	def get(self):
@@ -100,12 +114,11 @@ class WebServer(http.server.SimpleHTTPRequestHandler):
 
 			state = True if state == '1' else False
 
-			if blender.get() != state:
-				blender.set(state)
+			blender.set(state)
 
 		self.wfile.write(b'1\n' if blender.state else b'0\n')
 
-blender = Blender(PIN_BLENDER)
+blender = Blender(PIN_BLENDER, TIMEOUT_BLENDER_OFF)
 
 lp = srv_info['user'] + b':' + srv_info['pass']
 srv_info['auth'] = b'Basic ' + base64.b64encode(lp)
@@ -119,5 +132,6 @@ server.server_activate() # (see above comment)
 
 handler = http.server.SimpleHTTPRequestHandler
 
-print("Server bound to interface '{:}', port {:}".format(srv_info['host'], srv_info['port']))
+print("Server bound to interface '{:}', port {:}".format(srv_info['host'], 
+							 srv_info['port']))
 server.serve_forever()
