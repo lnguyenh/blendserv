@@ -18,7 +18,7 @@ srv_info = {'port': 8192, # Listening port
 	    'pass': b'froopberry'}
 
 TIMEOUT_BLENDER_OFF = 7 * 60
-PIN_BLENDER = 18 # RPIO 1 on Raspberry Pi model B
+PIN_BLENDER = 18 # GPIO 1 on Raspberry Pi model B
 
 def handle_sigalrm(sig, frame):
 	print("SIGALRM")
@@ -38,7 +38,7 @@ class Blender():
 		signal.signal(signal.SIGALRM, handle_sigalrm)
 
 	def set(self, state):
-		print('Setting RPIO pin {:} to {:}'.format(self.pin, state))
+		print('Setting GPIO pin {:} to {:}'.format(self.pin, state))
 		RPIO.output(self.pin, state)
 		signal.alarm(TIMEOUT_BLENDER_OFF if state else 0)
 		self.state = state
