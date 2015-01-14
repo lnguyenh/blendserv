@@ -17,7 +17,7 @@ srv_info = {'port': 8192, # Listening port
 	    'user': b'foop',
 	    'pass': b'froopberry'}
 
-TIMEOUT_BLENDER_OFF = 5 # 3 * 60
+TIMEOUT_BLENDER_OFF = 3 * 60
 PIN_BLENDER = 18 # GPIO 1 on Raspberry Pi model B
 
 class Blender():
