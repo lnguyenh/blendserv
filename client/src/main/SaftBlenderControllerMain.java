@@ -2,13 +2,21 @@ package main;
 
 import GUI.SaftBlenderGUI;
 
+import javax.swing.*;
+
 /**
- * Created by tylhadras on 2/27/15.
+ * Entry point, creates the GUI.
+ * Created by Gustav "Tylhadras" Lundström on 2/27/15.
  */
 public class SaftBlenderControllerMain {
 
     public static void main(String [] args) {
-        SaftBlenderGUI gui = new SaftBlenderGUI();
-        gui.buildAndShow();
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                SaftBlenderGUI gui = new SaftBlenderGUI();
+                gui.buildAndShow();
+            }
+        });
     }
 }

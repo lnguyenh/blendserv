@@ -10,6 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
+ * Thread that keeps polling the server for it's status.
  * Created by Gustav "Tylhadras" Lundström on 3/2/15.
  */
 public class PollingThread implements Runnable {
@@ -27,7 +28,6 @@ public class PollingThread implements Runnable {
     public void run() {
         while(true) {
             try {
-                Thread.sleep(2000);
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
 
@@ -48,6 +48,8 @@ public class PollingThread implements Runnable {
                 }
 
                 controllerGUI.setStatusFieldDisplay(response.toString());
+
+                Thread.sleep(1000);
 
             } catch (InterruptedException e) {
                 handleIt(e);

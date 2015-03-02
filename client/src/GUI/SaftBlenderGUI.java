@@ -50,7 +50,7 @@ public class SaftBlenderGUI extends JFrame {
         setUserName("foop");
         setPassWord("froopberry");
         try {
-            url = new URL("http://scramble.se:8192");
+            url = new URL("http://scrambled.se:8192");
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -92,38 +92,26 @@ public class SaftBlenderGUI extends JFrame {
         this.setVisible(true);
 
         //Dispatch polling thread
-        new Thread(new PollingThread(this, url)).start();
+        Thread pollingThread = new Thread(new PollingThread(this, url));
+        pollingThread.start();
     }
 
     private void sendPostRequest(int status) {
         try {
-            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+            connection = (HttpURLConnection)url.openConnection();
             connection.setRequestMethod("POST");
-            //connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
             String urlParams = "blender=" + Integer.toString(status);
-            System.out.println("URL: " + url);
-            System.out.println("URLParams: " + urlParams);
 
-            //connection.setRequestProperty("Content-Length", "" + Integer.toString(urlParams.getBytes().length));
+            connection.setRequestProperty("Content-Length", "" + Integer.toString(urlParams.getBytes().length));
 
-            //connection.setDoInput(true);
             connection.setDoOutput(true);
 
             DataOutputStream wr = new DataOutputStream(connection.getOutputStream ());
             wr.writeBytes(urlParams);
             wr.flush ();
             wr.close ();
-
-//            InputStream is = connection.getInputStream();
-//            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-//            String line;
-//            StringBuffer response = new StringBuffer();
-//            while((line = rd.readLine()) != null) {
-//                response.append(line);
-//                response.append('\r');
-//            }
-//            rd.close();
 
         } catch (IOException e) {
             e.printStackTrace();
