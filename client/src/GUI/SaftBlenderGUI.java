@@ -1,5 +1,7 @@
 package GUI;
 
+import GUI.polling.PollingThread;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -37,7 +39,6 @@ public class SaftBlenderGUI extends JFrame {
 
     private JButton onButton;
     private JButton offButton;
-    private JButton statusButton;
 
     private JLabel statusField;
     private JLabel statusDesc;
@@ -49,7 +50,7 @@ public class SaftBlenderGUI extends JFrame {
         setUserName("foop");
         setPassWord("froopberry");
         try {
-            url = new URL("http://scramble.se:8192");
+            url = new URL("http://scrambled.se:8192");
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -61,7 +62,7 @@ public class SaftBlenderGUI extends JFrame {
     }
 
     public void buildAndShow() {
-        this.setSize(480,60);
+        this.setSize(480, 60);
         this.setLayout(new FlowLayout());
         onButton = new JButton("ON!");
         onButton.addActionListener(new ActionListener() {
@@ -81,90 +82,36 @@ public class SaftBlenderGUI extends JFrame {
             }
         });
         this.add(offButton);
-        statusButton = new JButton("Status!");
-        statusButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                // Here we call the sendGetRequest method.
-                sendGetRequest();
-            }
-        });
-        this.add(statusButton);
         statusDesc = new JLabel("Status:");
         this.add(statusDesc);
         statusField = new JLabel();
-        sendGetRequest();
         this.add(statusField);
         this.setTitle("Saft Blender Control Panel by Gustav The Awesome");
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
-    }
 
-    private void sendGetRequest() {
-        try {
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-
-            connection.getResponseCode();
-
-            InputStream is = connection.getInputStream();
-            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-            String line;
-            StringBuffer response = new StringBuffer();
-            while ((line = rd.readLine()) != null) {
-                response.append(line);
-                response.append('\r');
-            }
-            rd.close();
-
-            if (connection != null) {
-                connection.disconnect();
-            }
-
-            setStatusFieldDisplay(response.toString());
-
-        } catch (IOException e) {
-            if (connection != null) {
-                connection.disconnect();
-            }
-            e.printStackTrace();
-            setStatusFieldDisplay("err");
-        }
+        //Dispatch polling thread
+        Thread pollingThread = new Thread(new PollingThread(this, url));
+        pollingThread.start();
     }
 
     private void sendPostRequest(int status) {
         try {
-            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+            connection = (HttpURLConnection)url.openConnection();
             connection.setRequestMethod("POST");
-            //connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
             String urlParams = "blender=" + Integer.toString(status);
-            System.out.println("URL: " + url);
-            System.out.println("URLParams: " + urlParams);
 
-            //connection.setRequestProperty("Content-Length", "" + Integer.toString(urlParams.getBytes().length));
+            connection.setRequestProperty("Content-Length", "" + Integer.toString(urlParams.getBytes().length));
 
-            connection.setDoInput(true);
             connection.setDoOutput(true);
 
             DataOutputStream wr = new DataOutputStream(connection.getOutputStream ());
             wr.writeBytes(urlParams);
             wr.flush ();
             wr.close ();
-
-            InputStream is = connection.getInputStream();
-            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-            String line;
-            StringBuffer response = new StringBuffer();
-            while((line = rd.readLine()) != null) {
-                response.append(line);
-                response.append('\r');
-            }
-            rd.close();
-
-            System.out.println("Response: " + response.toString());
-            setStatusFieldDisplay(response.toString());
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -176,7 +123,7 @@ public class SaftBlenderGUI extends JFrame {
         }
     }
 
-    private void setStatusFieldDisplay(String status) {
+    public void setStatusFieldDisplay(String status) {
         this.statusField.setText(status);
     }
 }
