@@ -1,0 +1,11 @@
+I haven't written any finished package for blendserv, but included is a 
+systemd service script (blendsev.service). It looks for blendserv.py in
+/usr/bin/ although this can easily be changed. Read the file itself for
+usage.
+
+Essentially though,
+
+cp server/blendserv.py /usr/bin/
+cp server/blendser.service /usr/lib/systemd/system
+systemctl enable blendserv
+systemctl start blendserv

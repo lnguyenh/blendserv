@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+blend_user=
+blend_pass=
+blend_host=
+args=
+
+if ! which curl > /dev/null 2>&1; then
+	echo "Missing dependency: curl" >&2
+	exit 1
+fi
+
+if [ "$1" = "on" -o "$1" = "1" ]; then
+	args="--data 'blender=1'"
+elif [ "$1" = "off" -o "$1" = "0" ]; then
+	args="--data 'blender=0'"
+elif [ "$1" = "status" ]; then
+	args=
+else
+	echo "Usage: $(basename $0) [on|off|status]" >&2
+	exit 1
+fi
+
+if [ -z "$blend_user" -o -z "$blend_pass" -o -z "$blend_host" ]; then
+	echo "Error: A required variable is unset!" >&2
+	echo "Edit '$(basename $0)' to remedy this" >&2
+	exit 1
+fi
+
+
+echo "Status:"
+curl --user "${blend_user}":"${blend_pass}" $args http://$blend_host:8192
