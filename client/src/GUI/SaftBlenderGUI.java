@@ -2,10 +2,12 @@ package GUI;
 
 import GUI.polling.PollingThread;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.*;
 
@@ -17,6 +19,8 @@ public class SaftBlenderGUI extends JFrame {
 
     private HttpURLConnection connection;
     private URL url;
+
+    private int previousStatus;
 
     private String userName;
     private String passWord;
@@ -42,6 +46,8 @@ public class SaftBlenderGUI extends JFrame {
 
     private JLabel statusField;
     private JLabel statusDesc;
+    private JLabel imageLabel;
+    private ImageIcon onImage, offImage;
 
     /***
      * Default constructor, with default values
@@ -50,7 +56,7 @@ public class SaftBlenderGUI extends JFrame {
         setUserName("foop");
         setPassWord("froopberry");
         try {
-            url = new URL("http://scrambled.se:8192");
+            url = new URL("http://scramble.se:8192");
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -64,6 +70,7 @@ public class SaftBlenderGUI extends JFrame {
     public void buildAndShow() {
         this.setSize(480, 60);
         this.setLayout(new FlowLayout());
+
         onButton = new JButton("ON!");
         onButton.addActionListener(new ActionListener() {
             @Override
@@ -73,6 +80,7 @@ public class SaftBlenderGUI extends JFrame {
             }
         });
         this.add(onButton);
+
         offButton = new JButton("OFF!");
         offButton.addActionListener(new ActionListener() {
             @Override
@@ -82,14 +90,21 @@ public class SaftBlenderGUI extends JFrame {
             }
         });
         this.add(offButton);
+
         statusDesc = new JLabel("Status:");
         this.add(statusDesc);
-        statusField = new JLabel();
-        this.add(statusField);
+
+        onImage = new ImageIcon("resources/strobe.gif");
+        offImage = new ImageIcon("resources/strobe_off.gif");
+        imageLabel = new JLabel();
+        this.add(imageLabel);
+
         this.setTitle("Saft Blender Control Panel by Gustav The Awesome");
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
+
+        this.previousStatus = 999;
 
         //Dispatch polling thread
         Thread pollingThread = new Thread(new PollingThread(this, url));
@@ -113,6 +128,15 @@ public class SaftBlenderGUI extends JFrame {
             wr.flush ();
             wr.close ();
 
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+
         } catch (IOException e) {
             e.printStackTrace();
 
@@ -124,6 +148,20 @@ public class SaftBlenderGUI extends JFrame {
     }
 
     public void setStatusFieldDisplay(String status) {
-        this.statusField.setText(status);
+        int numberStatus = Integer.parseInt(status.substring(0,1));
+
+        if(numberStatus == previousStatus) {
+            return;
+        } else {
+            previousStatus = numberStatus;
+        }
+
+        if(numberStatus == 1) {
+            imageLabel.setIcon(onImage);
+        } else if(numberStatus == 0) {
+            imageLabel.setIcon(offImage);
+        } else {
+            imageLabel.setText("Error");
+        }
     }
 }
