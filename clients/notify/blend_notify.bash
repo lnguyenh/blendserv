@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Sorry for the hackiness! :)
+# Poll the blender and show a notification if the blender state has changed.
 
 poll_rate=5s
 username="$BLENDER_USERNAME"
@@ -12,7 +12,7 @@ blender_urgency[0]="normal"
 
    blender_icon[1]="$(pwd)/strobe.gif"
    blender_text[1]="The blender is now turned on"
-blender_urgency[1]="critical"
+blender_urgency[1]="normal"
 
 usage() {
 	echo -e "Blender notifier\n"

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-blend_user=
-blend_pass=
-blend_host=
+username="$BLENDER_USERNAME"
+password="$BLENDER_PASSWORD"
+hostname="$BLENDER_HOSTNAME"
 args=
 
 if ! which curl > /dev/null 2>&1; then
@@ -21,12 +21,11 @@ else
 	exit 1
 fi
 
-if [ -z "$blend_user" -o -z "$blend_pass" -o -z "$blend_host" ]; then
+if [ -z "$username" -o -z "$password" -o -z "$hostname" ]; then
 	echo "Error: A required variable is unset!" >&2
-	echo "Edit '$(basename $0)' to remedy this" >&2
+	echo "Edit '$(basename $0)' to remedy this, or set a BLENDER_ variable" >&2
 	exit 1
 fi
 
-
 echo "Status:"
-curl --user "${blend_user}":"${blend_pass}" $args http://$blend_host:8192
+curl --user "${username}":"${password}" $args http://$hostname:8192
