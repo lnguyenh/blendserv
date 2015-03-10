@@ -6,11 +6,11 @@ username="$BLENDER_USERNAME"
 password="$BLENDER_PASSWORD"
 hostname="$BLENDER_HOSTNAME"
 
-   blender_icon[0]="strobe_off.gif"
+   blender_icon[0]="$(pwd)/strobe_off.gif"
    blender_text[0]="The blender is now turned off"
 blender_urgency[0]="normal"
 
-   blender_icon[1]="strobe.gif"
+   blender_icon[1]="$(pwd)/strobe.gif"
    blender_text[1]="The blender is now turned on"
 blender_urgency[1]="critical"
 
