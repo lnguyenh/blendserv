@@ -73,7 +73,7 @@ state_last="not state_now"
 while true; do
 	state_now=$(curl --silent --user "$username":"$password" "$hostname")
 
-	if [ "$state_now" -ne "0" -a "$state_now" -ne "1" ]; then
+	if [ "$state_now" != "0" -a "$state_now" != "1" ]; then
 		echo "Error: Unexpected response: \"$state_now\"" >&2
 	else
 		if [ "$state_now" != "$state_last" ]; then
