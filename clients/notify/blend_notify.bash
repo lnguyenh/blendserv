@@ -77,11 +77,12 @@ while true; do
 		echo "Error: Unexpected response: \"$state_now\"" >&2
 	else
 		if [ "$state_now" != "$state_last" ]; then
-			state_last="$state_now"
+			echo "State changed: $state_last -> $state_now"
 			notify-send --icon="${blender_icon[$state_now]}" \
 				    --urgency="${blender_urgency[$state_now]}" \
 				    "Blender State Changed" \
 				    "${blender_text[$state_now]}"
+			state_last="$state_now"
 		fi
 	fi
 		  
