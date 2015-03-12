@@ -49,7 +49,7 @@ if [ -z "$hostname" -o -z "$username" -o -z "$password" ]; then
 	exit 1
 fi
 
-deps=(curl notify-send)
+deps=(curl notify-send date)
 count=0
 
 for dep in ${deps[*]}; do
@@ -68,15 +68,17 @@ unset count
 unset deps
 
 state_now=
-state_last="not state_now"
+state_last="?"
 
 while true; do
 	state_now=$(curl --silent --user "$username":"$password" "$hostname")
 
 	if [ "$state_now" != "0" -a "$state_now" != "1" ]; then
+		echo -n "$(date +'%x %X:') "
 		echo "Error: Unexpected response: \"$state_now\"" >&2
 	else
 		if [ "$state_now" != "$state_last" ]; then
+			echo -n "$(date +'%x %X:') "
 			echo "State changed: $state_last -> $state_now"
 			notify-send --icon="${blender_icon[$state_now]}" \
 				    --urgency="${blender_urgency[$state_now]}" \
