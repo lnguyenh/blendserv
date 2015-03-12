@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 # Poll the blender and show a notification if the blender state has changed.
 
-poll_rate=5s
+poll_rate=4s
 username="$BLENDER_USERNAME"
 password="$BLENDER_PASSWORD"
 hostname="$BLENDER_HOSTNAME"
 
    blender_icon[0]="$(pwd)/strobe_off.gif"
-   blender_text[0]="The blender is now turned off"
+   blender_text[0]="\nThe blender is now turned off"
 blender_urgency[0]="normal"
 
    blender_icon[1]="$(pwd)/strobe.gif"
-   blender_text[1]="The blender is now turned on"
+   blender_text[1]="\nThe blender is now turned on"
 blender_urgency[1]="normal"
 
 usage() {
@@ -72,17 +72,16 @@ state_last="?"
 
 while true; do
 	state_now=$(curl --silent --user "$username":"$password" "$hostname")
+	stamp="$(date +'%x %X')"
 
 	if [ "$state_now" != "0" -a "$state_now" != "1" ]; then
-		echo -n "$(date +'%x %X:') "
-		echo "Error: Unexpected response: \"$state_now\"" >&2
+		echo "$stamp: Unexpected response: \"$state_now\"" >&2
 	else
 		if [ "$state_now" != "$state_last" ]; then
-			echo -n "$(date +'%x %X:') "
-			echo "State changed: $state_last -> $state_now"
+			echo "$stamp: State changed: $state_last -> $state_now"
 			notify-send --icon="${blender_icon[$state_now]}" \
 				    --urgency="${blender_urgency[$state_now]}" \
-				    "Blender State Changed" \
+				    "$stamp" \
 				    "${blender_text[$state_now]}"
 			state_last="$state_now"
 		fi
