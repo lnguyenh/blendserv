@@ -72,10 +72,12 @@ state_last="?"
 
 while true; do
 	state_now=$(curl --silent --user "$username":"$password" "$hostname")
+	ret=$?
 	stamp="$(date +'%x %X')"
 
 	if [ "$state_now" != "0" -a "$state_now" != "1" ]; then
-		echo "$stamp: Unexpected response: \"$state_now\"" >&2
+		echo "$stamp: Unexpected response: \"$state_now\"" \
+		     "(return code $ret, is the network down?)"	>&2
 	else
 		if [ "$state_now" != "$state_last" ]; then
 			echo "$stamp: State changed: $state_last -> $state_now"
