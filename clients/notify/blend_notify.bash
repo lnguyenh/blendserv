@@ -17,7 +17,7 @@ blender_urgency[1]="normal"
 usage() {
 	echo -e "Blender notifier\n"
 	echo "Usage: $(basename $0) [options]"
-	echo -e "Example: $(basename $0) -u username -p password -h hostname\n"
+	echo -e "Example: $(basename $0) -u username -p password -h hostname:port\n"
 	echo "-u <user>      Self-explanatory (default: '')"
 	echo "-p <password>  Self-explanatory (default: '')"
 	echo "-h <hostname>  Self-explanatory (default: '')"
