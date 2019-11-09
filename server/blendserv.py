@@ -4,7 +4,7 @@
 # curl --user user:pass http://hostname:port
 # Set current blender state (to on)
 # curl --user user:pass --data 'blender=1' http://hostname:port
-
+from datetime import datetime
 
 from gpiozero import LED
 import threading
@@ -164,7 +164,7 @@ class CustomHTTPServer(http.server.HTTPServer):
 	def get_auth_key(self):
 		return self.key
 
-
+print('Saftblandaren started at {}'.format(datetime.now()))
 server = CustomHTTPServer(('', PORT))
 server.set_auth(USER, PASSWORD)
 try:
@@ -174,3 +174,4 @@ except Exception as e:
 	pass
 blender.cleanup()
 server.server_close()
+print('Saftblandaren exited at {}'.format(datetime.now()))
