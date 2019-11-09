@@ -1,14 +1,24 @@
+#!/usr/bin/env python3
+# Usage example:
+# Get current blender state:
+# curl --user user:pass http://hostname:port
+# Set current blender state (to on)
+# curl --user user:pass --data 'blender=1' http://hostname:port
+
+
 from gpiozero import LED
 import threading
 import http.server
 import base64
 import json
 
+# Configuration
 USER = 'froop'
 PASSWORD = 'froopberry'
 TIMEOUT = 4
 PORT = 8192
 
+# Constants
 ON = 'on'
 OFF = 'off'
 
