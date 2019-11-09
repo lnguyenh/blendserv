@@ -81,7 +81,7 @@ class CustomServerHandler(http.server.BaseHTTPRequestHandler):
 	def do_AUTHHEAD(self):
 		self.send_response(401)
 		self.send_header(
-			'WWW-Authenticate', 'Basic realm="Demo Realm"')
+			'WWW-Authenticate', 'Basic realm="The Satflandaren"')
 		self.send_header('Content-type', 'application/json')
 		self.end_headers()
 
