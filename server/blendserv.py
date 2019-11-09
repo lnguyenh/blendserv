@@ -164,6 +164,7 @@ class CustomHTTPServer(http.server.HTTPServer):
 	def get_auth_key(self):
 		return self.key
 
+
 print('Saftblandaren started at {}'.format(datetime.now()))
 server = CustomHTTPServer(('', PORT))
 server.set_auth(USER, PASSWORD)
