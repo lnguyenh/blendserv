@@ -6,6 +6,6 @@ usage.
 Essentially though,
 
 cp server/blendserv.py /usr/bin/
-cp server/blendser.service /usr/lib/systemd/system
+cp server/blendserv.service /lib/systemd/system
 systemctl enable blendserv
 systemctl start blendserv

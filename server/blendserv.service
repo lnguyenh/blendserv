@@ -7,10 +7,9 @@ Description=Blender server
 [Service]
 Type=idle
 Restart=on-abort
-ExecStart=/usr/bin/blendserv.py
+ExecStart=python3 /home/pi/blendserv/server/blendserv.py
 ExecReload=/bin/kill -s HUP $MAINPID
 
 [Install]
 Alias=blendserv.service
 WantedBy=multi-user.target
-
