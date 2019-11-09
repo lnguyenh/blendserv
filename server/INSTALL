@@ -1,11 +1,6 @@
-I haven't written any finished package for blendserv, but included is a 
-systemd service script (blendsev.service). It looks for blendserv.py in
-/usr/bin/ although this can easily be changed. Read the file itself for
-usage.
-
-Essentially though,
-
-cp server/blendserv.py /usr/bin/
-cp server/blendserv.service /lib/systemd/system
-systemctl enable blendserv
-systemctl start blendserv
+1. Verify that you have python3 installed and the gpiozero package
+2. Place the file server/blendserv.service in /lib/systemd/system/
+3. Modify the ExecStart line in /lib/systemd/system/blendser.service
+depending on where blendserv.py is and if you want logs
+4. Install blendser.service  with 'sudo systemctl enable blendserv'
+5. Either do 'sudo reboot' or run 'sudo systemctl start blendserv'

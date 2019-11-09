@@ -1,15 +1,10 @@
-# Place in /lib/systemd/system/
-# Install with 'sudo systemctl enable blendserv'
-# Start with 'sudo systemctl start blendserv' (first time)
 [Unit]
 Description=Blender server
 
 [Service]
 Type=idle
-Restart=on-abort
-ExecStart=/usr/bin/python3 /home/pi/blendserv/server/blendserv.py
-ExecReload=/bin/kill -s HUP $MAINPID
+User=pi
+ExecStart=/usr/bin/python3 /home/pi/blendserv/server/blendserv.py > /home/pi/blender.log 2>&1
 
 [Install]
-Alias=blendserv.service
 WantedBy=multi-user.target
