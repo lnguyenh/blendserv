@@ -6,7 +6,8 @@ Blendserv is a simple webserver that runs on a Raspberry Pi, It allows toggling 
 <img src="siren.jpg" width="30%"><img src="gpio.jpg" width="30%">
 
 ## Usage
-- Make a POST request at http://YOUR-PI-IP-ADDRESS:8192 with the credentials you (can) define in `blendserv.py`. This will toggle the red flash siren for 4 seconds. 
+- Make a POST request at http://YOUR-PI-IP-ADDRESS:8192 with the credentials 
+defined in `blendserv.py`. This will toggle the red flash siren for 4 seconds. 
 - Make a GET request to get the current status of the siren.
 
 ## Requirements
@@ -21,5 +22,5 @@ Blendserv is a simple webserver that runs on a Raspberry Pi, It allows toggling 
 4. Install blendser.service  by running `sudo systemctl enable blendserv`
 5. Run` sudo systemctl start blendserv`
 
-Don't hesitate to have a look into the two files to adjust things like the user/password and the siren-toggling duration
+Don't hesitate to have a look into the two files to adjust things like the user/password, the network port used and the siren-toggling duration
 
