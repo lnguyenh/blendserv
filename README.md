@@ -1,7 +1,7 @@
 # Blendserv
 
 ## What is it?
-Blendserv is a simple webserver that runs on a Raspberry Pi. It allows toggling an alarm-light siren with a simple http request. Perfect for some extra fun when deploying production code at work for example.
+Blendserv is a simple webserver that runs on a Raspberry Pi. It allows toggling an alarm-light siren with http requests. Perfect for some extra fun when deploying new code in production.
 
 <img src="siren.jpg" width="30%"><img src="gpio.jpg" width="30%">
 
