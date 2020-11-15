@@ -1,7 +1,7 @@
 # Blendserv
 
 ## What is it?
-Blendserv is a simple webserver that runs on a Raspberry Pi, allowing to toggle a red flash siren
+Blendserv is a simple webserver that runs on a Raspberry Pi, allowing to toggle a red flash siren with a simple http request. Perfect for some extra fun when deploying production code at work for example.
 
 <img src="siren.jpg" width="50%"><img src="gpio.jpg" width="50%">
 
