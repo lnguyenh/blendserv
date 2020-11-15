@@ -1,6 +1,0 @@
-1. Verify that you have python3 installed and the gpiozero package
-2. Place the file server/blendserv.service in /lib/systemd/system/
-3. Modify the ExecStart line in /lib/systemd/system/blendser.service
-depending on where blendserv.py is and if you want logs
-4. Install blendser.service  with 'sudo systemctl enable blendserv'
-5. Either do 'sudo reboot' or run 'sudo systemctl start blendserv'
