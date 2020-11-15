@@ -1,9 +1,4 @@
 #!/usr/bin/env python3
-# Usage example:
-# Get current blender state:
-# curl --user user:pass http://hostname:port
-# Set current blender state (to on)
-# curl --user user:pass --data 'blender=1' http://hostname:port
 from datetime import datetime
 
 from gpiozero import LED
