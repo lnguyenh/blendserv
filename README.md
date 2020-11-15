@@ -1,13 +1,13 @@
 # Blendserv
 
 ## What is it?
-Blendserv is a simple webserver that runs on a Raspberry Pi, It allows toggling a red flash siren with a simple http request. Perfect for some extra fun when deploying production code at work for example.
+Blendserv is a simple webserver that runs on a Raspberry Pi. It allows toggling an alarm-light siren with a simple http request. Perfect for some extra fun when deploying production code at work for example.
 
 <img src="siren.jpg" width="30%"><img src="gpio.jpg" width="30%">
 
 ## Usage
-- Make a POST request at http://YOUR-PI-IP-ADDRESS:8192 with the credentials 
-defined in `blendserv.py`. This will toggle the red flash siren for 4 seconds. 
+- Make a POST request at http://your-raspberry-pi-IP-address:8192 with the credentials 
+defined in `blendserv.py`. This will toggle the siren for 4 seconds. 
 - Make a GET request to get the current status of the siren.
 
 ## Requirements
